@@ -26,79 +26,38 @@
 
 \chapter{Analisi}
 
-In questo capitolo andrà fatta l'analisi dei requisiti e quella del problema, ossia verranno elencate le cose che
-l'applicazione dovrà fare (requisiti) e verrà descritto il dominio applicativo (analisi del problema).
+Il gruppo si propone di creare un videogioco chiamato "Crab Invaders" ovvero una versione rivisitata in chiave rogue-lite: ovvero dove il giocatore quando muore o fallisce, può spendere la valuta data dai nemici per acquistare dei potenziamenti che permetteranno di potenziarsi ad ogni tentativo.  
 %
-In fase di analisi, è molto importante tenere a mente che non vi deve essere alcun riferimento al design né tantomeno
-alle tecnologie implementative, ovvero, non si deve indicare come il software sarà internamente realizzato.
-%
-La fase di analisi, infatti, \textit{precede} qualunque azione di design o di implementazione.
+Prendendo spunto dal videogioco originale ``"Space Invaders" del 1978''\footnote{\url{https://it.wikipedia.org/wiki/Space_Invaders}}.
 
 \section{Descrizione e requisiti}
 
-Nella sezione di descrizione va descritto cosa il software deve fare.
+Il software dovrà permettere di utilizzare e manovrare in due direzioni possibili (destra e sinistra) il carro-armato, ovvero un carro armato che verrà controllato dal giocatore che potrà anche decidere quando sparare ai grachi alieni. 
 %
-Al termine della lettura della sezione,
-il docente deve avere un'idea molto chiara di cosa l'applicazione sia
-e di cosa essa debba fare.
+I granchi alieni sono i nemici presenti all'interno del gioco che caleranno sul carro armato dal cielo (dall'alto dello schermo) e che cambieranno ed evolveranno nel corso di una partita. 
 %
-Si consiglia di elencare i requisiti in modo schematico, idealmente separando i requisiti funzionali
-(\emph{cosa} fa il sistema)
-da quelli non funzionali
-(\emph{come} lo fa, ad esempio in termini di prestazioni, sicurezza, portabilità).
+Il gioco inizia dal menu dove si comincia un salvataggio che parte con il primo livello e poi a seguire gli altri e alla fine se si riesce ad arrivare all'ultimo si finisce il gioco, ma se se si muore durante il salvataggio i nemici rilasceranno alla morte una valuta che sarà utilizzata all'interno dello shop.
 
-\subsection*{Elementi positivi}
+\subsection*{Requisiti funzionali}
 \begin{itemize}
-	\item Si fornisce una descrizione in linguaggio naturale di ciò che il software dovrà fare.
-	\item Gli obiettivi sono spiegati con chiarezza, per punti.
-	\item Se vi sono termini il cui significato non è immediatamente intuibile, essi vengono spiegati.
-	\item Vengono descritti separatamente requisiti funzionali e non funzionali.
+	\item Ci dovrà essere un Menu, che parte appena parte il software con la possibilità di : \begin{itemize}
+	    \item fare una nuova partita ( che cancella una evntualmente già esistente)
+        \item caricare una partita non finita
+        \item usare lo shop
+        \item uscire dal gioco
+        \item campiare le impostazioni: \begin{itemize}
+        \item il volume
+        \item la lingua: (italiano o inglese)
+        \end{itemize}
+	\end{itemize}
+	\item I nemici dovranno essere divisi ad ondate all'interno dei livelli, e dovranno essere capaci di moversi e sparare contro il giocatore.
 \end{itemize}
 
-\subsection*{Elementi negativi}
+\subsection*{Requisiti non funzionali}
 \begin{itemize}
-	\item Si forniscono indicazioni circa le soluzioni che si vogliono adottare.
-	\item Si forniscono dettagli di tipo tecnico o implementativo (parlando di classi, linguaggi di programmazione, librerie, eccetera).
+	\item Che il software abbia una gestione delle risorse che abbia scarsi requisiti hardware
 \end{itemize}
 
-\subsection*{Esempio}
-Il software, commissionato dal centro di ricerca ``Aperture Laboratories Inc.''\footnote{
-\url{https://www.youtube.com/watch?v=6XGeJwsUP9c} %QUESTO è SKONG, STA ATTENTO E CAMBIALO
-}, mira alla costruzione di una intelligenza artificiale di nome GLaDOS (Genetic Lifeform and Disk Operating System).
-%
-Per intelligenza artificiale si intende un software in grado di assumere decisioni complesse in maniera semi autonoma sugli argomenti di sua competenza, a partire dai vincoli e dagli obiettivi datigli dall'utente.
-%
-In questo caso particolare, l'intelligenza artificiale dovrà interagire con un soggetto umano
-e guidarlo attraverso il superamento di una serie di labirinti di difficoltà incrementale.
-%
-I labirinti potrebbero richiedere l'uso di oggetti, la pressione di pulsanti, l'azionamento di leve,
-o la costruzione di portali per il teletrasporto.
-%
-Un portale per il teletrasporto è un'apertura bidimensionale nel tessuto spazio-temporale,
-che consente a chiunque vi entri di uscire dall'altro portale.
-%
-I rompicapi sono di tipo fisico (ad
-esempio, manipolazione di oggetti, pressione di pulsanti, azionamento di leve), e si ritengono
-conclusi una volta che il soggetto riesce a trovare l'uscita dalla camera di test.
-%
-Alla conclusione di tutti i labirinti,
-al soggetto verrà offerta una torta.
-\definecolor{lie}{HTML}{FAFAFA}
-\textcolor{lie}{\ldots Or not. The cake is a \underline{lie!}}
-
-\subsubsection{Requisiti funzionali}
-\begin{itemize}
-	\item Il piano preciso ed il numero delle sfide sarà variabile,
-	e GLaDOS dovrà essere in grado di adattarsi dinamicamente e di fornire indicazioni di guida.
-	\item La personalità di GLaDOS dovrà essere modificabile.
-	\item GLaDOS dovrà essere in grado di comunicare col reparto cucina di Aperture
-	per ordinare torte per coloro che completassero tutti i test con successo.
-\end{itemize}
-
-\subsubsection{Requisiti non funzionali}
-\begin{itemize}
-	\item GLaDOS dovrà essere estremamente efficiente nell'uso delle risorse. Le specifiche tecniche parlano della possibilità di funzionare su dispositivi alimentati da una batteria a patata.
-\end{itemize}
 
 
 \section{Modello del Dominio}

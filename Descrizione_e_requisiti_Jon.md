@@ -1,5 +1,5 @@
 ## 1.1 Descrizione e requisiti
-*Idea della funzione del programma, niente design ne' implementazioni*
+
 
 Il videogioco consiste nel permettere al giocatore di controllare un carro armato per respingere ondate di entità ostili rappresentate da "granchi alieni" (da qui il nome).
 Il videogioco è visualizzato in formato 2D, il carro armato è posizionato nella parte bassa dello schermo mentre le entità ostili appaiono dalla parte alta.

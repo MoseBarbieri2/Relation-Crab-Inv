@@ -1,39 +1,56 @@
 classDiagram
-Entity <|-- InanimateEntity
-Entity <|-- LiveEntity
-MovableObject <|-- Player
-MovableObject <|-- Enemy
-LiveEntity <|-- Enemy
-LiveEntity <|-- Player
-InanimateEntity <|-- Barrier
-InanimateEntity <|-- Bullet
-MovableObject <|-- Bullet
-class Entity{
-    <<inteface>>
-}
-class InanimateEntity {
-    <<inteface>>
-}
-class LiveEntity {
-    <<inteface>>
-}
-class Enemy {
-    <<inteface>>
-}
-class Player{
+Entity <|-- Barrier
+Entity <|-- Bullet
+Entity <|-- Enemy
+Entity <|-- Player
+MovableEntity <|-- Enemy
+MovableEntity <|-- Player
+MovableEntity <|-- Bullet
+ShootingEntity <|-- Enemy
+ShootingEntity <|-- Player
+Level -- Wave
+Save -- Level
+Entity -- Wave
+class Save {
     <<interface>>
+    +loadSave()
+    +saveCheckPoint(level: Level)
+    +saveProfile()
 }
-class Barrier {
-    <<inteface>>
-}
-class Bullet {
-    <<inteface>>
+class Wave {
+    <<interface>>
+    +isWaveFinished()
 }
 class Level {
-    <<inteface>>
-    +spawnEnemies(enemies: Enemy)
+    <<interface>>
+    +handleWaves()
+    +getCurrentWave()
 }
-class MovableObject {
-    <<inteface>>
+class Entity {
+    <<interface>>
+    +getHealthPoints()
+    +isAlive()
+    +getCoordinates()
+}
+class ShootingEntity {
+    <<interface>>
+    +canShoot()
+    +setFireRate()
+}
+class MovableEntity {
+    <<interface>>
     +move()
+}
+class Barrier {
+    <<interface>>
+}
+class Enemy {
+    <<interface>>
+    +getEnemyType()
+}
+class Player {
+    <<interface>>
+}
+class Bullet {
+    <<interface>>
 }

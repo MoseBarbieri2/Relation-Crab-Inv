@@ -11,10 +11,10 @@ Le partite seguono una struttura di livelli predefinita che si susseguono al com
 ### Requisiti funzionali
 - Il carro armato controllato dal giocatore deve prevedere il movimento sull'asse laterale (sinistra, destra) e la possibilità di "fare fuoco"
 - Le entità ostili cercheranno di raggiungere il punto più basso dello schermo, ergo l'asse del giocatore, o di colpire il carro armato con proiettili
-- I tentativi potranno essere salvate a punti di salvataggio in modo da poter riprendere a giocare in un secondo momento
-- Sarà possibile utilizzare le risorse acquisite per potenziarsi solo tra un tentativo e l'altro, mai durante un tentativo
+- I tentativi potranno essere salvati a punti di salvataggio in modo da poter riprendere a giocare in un secondo momento
+- Sarà possibile utilizzare le risorse acquisite durante i tentativi per potenziarsi solo ed esclusivamente tra un tentativo e l'altro, mai durante un tentativo in corso
 - La condizione di vittoria per poter passare al livello successivo (ed eventualmente "vincere il gioco") è quella di eliminare tutte le entità ostili in tempo
-- La condizione di sconfitta che terminerà la partita è la fine delle "vite" disponibili al giocatore
+- La condizione di sconfitta che terminerà il tentativo è la fine delle "vite" disponibili al giocatore
 
 ### Requisiti non funzionali
 - Il gioco non dovrà avere grandi requisiti di risorse di sistema, dovrà essere facilmente eseguibile anche su macchine con prestazioni hardware ridotte

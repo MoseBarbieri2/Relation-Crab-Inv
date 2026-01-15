@@ -1,13 +1,13 @@
 classDiagram
-Entity <|-- Barrier
+Entity <|-- EnergyShield
 Entity <|-- Bullet
 Entity <|-- Enemy
 Entity <|-- Player
-MovableEntity <|-- Enemy
-MovableEntity <|-- Player
-MovableEntity <|-- Bullet
-ShootingEntity <|-- Enemy
-ShootingEntity <|-- Player
+Movable <|-- Enemy
+Movable <|-- Player
+Movable <|-- Bullet
+Shooter <|-- Enemy
+Shooter <|-- Player
 Level -- Wave
 Save -- Level
 Entity -- Wave
@@ -31,17 +31,18 @@ class Entity {
     +getHealthPoints()
     +isAlive()
     +getCoordinates()
+    +onCollision(Entity: otherEntity)
 }
-class ShootingEntity {
+class Shooter {
     <<interface>>
-    +canShoot()
-    +setFireRate()
+    +isAbleToShoot()
+    +getFireRate()
 }
-class MovableEntity {
+class Movable {
     <<interface>>
     +move()
 }
-class Barrier {
+class EnergyShield {
     <<interface>>
 }
 class Enemy {

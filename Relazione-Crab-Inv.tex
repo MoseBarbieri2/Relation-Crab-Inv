@@ -7,6 +7,14 @@
 \usepackage{float}
 \usepackage{xcolor}
 \usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+    pdftitle={PCMASTERRACEDB},
+    pdfpagemode=FullScreen,
+}
 
 % Questo commentalo se vuoi scrivere in inglese.
 \usepackage[italian]{babel}
@@ -81,10 +89,10 @@ La Terra è dotata di uno scudo planetario che la proteggerà fino a che non ver
 Proseguendo sempre di più nei livelli si potrà, infine, finire il gioco, scacciando definitivamente gli invasori.
 
 \begin{figure}[H]
-	\centering{}
-	\includegraphics{img/analysis.pdf}
-	\caption{Schema UML dell'analisi del dominio, con rappresentate le entità principali ed i rapporti fra loro}
-	\label{img:analysis}
+    \centering
+    \includegraphics[width=1\linewidth]{img/modelloDominio.png}
+    \caption{Schema UML dell'analisi del dominio, con rappresentate le entità principali ed i rapporti fra loro}
+    \label{img:analysis}
 \end{figure}
 
 \chapter{Design}

@@ -1,4 +1,9 @@
+%%{init: {'theme':'default', 'themeVariables': {'background':'#ffffff'}}}%%
 classDiagram
+
+%% =========================
+%% INHERITANCE / CAPABILITIES
+%% =========================
 
 Entity <|-- EnergyShield
 Entity <|-- Bullet
@@ -12,17 +17,32 @@ Movable <|-- Bullet
 Shooter <|-- Enemy
 Shooter <|-- Player
 
+
+%% =========================
+%% GAME FLOW STRUCTURE
+%% =========================
+
 GameSession -- Level
 Level -- Wave
 Wave -- Entity
 
-Save -- GameSession
+
+%% =========================
+%% META PROGRESSION
+%% =========================
+
 Save -- UserProfile
+Save -- GameSession
 
 GameSession -- UserProfile
 
 Shop -- UserProfile
 Shop -- PowerUp
+
+
+%% =========================
+%% INTERFACES DEFINITIONS
+%% =========================
 
 class Save {
     <<interface>>

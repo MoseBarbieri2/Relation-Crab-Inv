@@ -12,7 +12,7 @@
     linkcolor=blue,
     filecolor=magenta,      
     urlcolor=cyan,
-    pdftitle={PCMASTERRACEDB},
+    pdftitle={Relazione-Crab-Inv},
     pdfpagemode=FullScreen,
 }
 
@@ -38,14 +38,15 @@
 \section{Descrizione e requisiti}
 
 Il gruppo si propone di creare un videogioco chiamato "Crab Invaders" ovvero una versione rivisitata 
-del videogioco originale "Space Invaders"\footnote{\url{https://it.wikipedia.org/wiki/Space_Invaders}} 
+del videogioco originale "Space Invaders"
+\footnote{\url{https://it.wikipedia.org/wiki/Space_Invaders}} 
 del 1978. Il videogioco consiste nel controllare un carro armato (il giocatore) per respingere ondate di entità ostili rappresentate da "granchi alieni" (da qui il nome).
 \\
 Il videogioco è visualizzato in formato 2D, il carro armato si muove a terra (parte bassa dello schermo),  mentre le entità ostili discendono dallo spazio (parte alta dello schermo). L'obiettivo del gioco è quello di respingere i nemici tramite l'arma del veicolo controllato, eliminandoli prima che possano raggiungere la posizione del carro armato ed evitandone eventuali proiettili da essi sparati.
 La struttura del gioco è basata sul genere "rogue-lite", ossia ogni tentativo concluso (con successo o meno) permetterà al giocatore di utilizzare le ricompense ottenute per migliorare il proprio veicolo in modo da essere meglio preparato per il tentativo successivo.
 \\
 Le partite seguono una struttura di livelli predefinita che si susseguono al compimento di quello precedente. 
-La condizione di vittoria per poter passare al livello successivo (ed eventualmente "vincere il gioco") è quella di eliminare tutte le entità ostili prima che raggiungano la Terra, pena la perdità di una vita.
+La condizione di vittoria per poter passare al livello successivo (ed eventualmente "vincere il gioco") è quella di eliminare tutte le entità ostili prima che raggiungano la Terra, pena la perdita di una vita.
 %
 La condizione di sconfitta che terminerà il tentativo è la fine delle "vite" disponibili al giocatore.
 È prevista la possibilità di localizzazione, in modo da permettere di cambiare la lingua dei testi mostrati.
@@ -53,7 +54,7 @@ La condizione di sconfitta che terminerà il tentativo è la fine delle "vite" d
 \subsection*{Requisiti funzionali}
 \begin{itemize}
 	\item Ci dovrà essere un Menu, con la possibilità di : \begin{itemize}
-	    \item fare una nuova partita ( che cancella una evntualmente già esistente)
+	    \item fare una nuova partita ( che cancella una eventualmente già esistente)
         \item caricare una partita non finita
         \item consultare lo storico dei tentativi
         \item usare lo shop
@@ -79,9 +80,9 @@ La condizione di sconfitta che terminerà il tentativo è la fine delle "vite" d
 \newpage
 \section{Modello del Dominio}
 
-Il carro armato dovrà fronteggiare i "granchi alieni", che continueranno ad avvicinarsi alla Terra ad ondate, sparndogli col suo cannone e schivando i colpi alieni a lui rivolti. 
+Il carro armato dovrà fronteggiare i "granchi alieni", che continueranno ad avvicinarsi alla Terra ad ondate, sparandogli col suo cannone e schivando i colpi alieni a lui rivolti. 
 %
-La Terra è dotata di uno scudo planetario che la proteggerà fino a che non verrà distrutto. Per "scudo planetario" si intende uno scudo energetico ad una via: ovvero che assorbe i colpi provenienti dall'esterno e lascia passare quelli provienti dal pianeta. I nemici caduti rilasceranno una valuta che verrà poi utilizzata per acquistare potenziamenti per il carro armato o lo scudo planetario. Col susseguirsi delle ondate si dovrebbe incontrare una difficoltà tale da perdere se non si hanno sufficienti potenziamenti. 
+La Terra è dotata di uno scudo planetario che la proteggerà fino a che non verrà distrutto. Per "scudo planetario" si intende uno scudo energetico ad una via: ovvero che assorbe i colpi provenienti dall'esterno e lascia passare quelli provenienti dal pianeta. I nemici caduti rilasceranno una valuta che verrà poi utilizzata per acquistare potenziamenti per il carro armato o lo scudo planetario. Col susseguirsi delle ondate si dovrebbe incontrare una difficoltà tale da perdere se non si hanno sufficienti potenziamenti. 
 \definecolor{lie}{HTML}{FAFAFA}
 \textcolor{lie}{(skill issue)} %DA TOGLIERE%
 \\

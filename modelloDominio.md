@@ -1,4 +1,5 @@
 classDiagram
+
 Entity <|-- EnergyShield
 Entity <|-- Bullet
 Entity <|-- Enemy
@@ -11,24 +12,30 @@ Movable <|-- Bullet
 Shooter <|-- Enemy
 Shooter <|-- Player
 
+GameSession -- Level
 Level -- Wave
-Save -- Level
-Entity -- Wave
+Wave -- Entity
 
+Save -- GameSession
 Save -- UserProfile
+
+GameSession -- UserProfile
+
 Shop -- UserProfile
 Shop -- PowerUp
 
 class Save {
     <<interface>>
     +loadSave()
-    +saveCheckPoint(level: Level)
+    +saveCheckPoint(session: GameSession)
     +saveProfile(profile: UserProfile)
 }
 
-class Wave {
+class GameSession {
     <<interface>>
-    +isWaveFinished()
+    +getCurrentLevel()
+    +nextLevel()
+    +isGameOver()
 }
 
 class Level {
@@ -37,23 +44,28 @@ class Level {
     +getCurrentWave()
 }
 
+class Wave {
+    <<interface>>
+    +isWaveFinished()
+}
+
 class Entity {
     <<interface>>
     +getHealthPoints()
     +isAlive()
     +getCoordinates()
-    +onCollision(Entity: otherEntity)
+    +onCollision(otherEntity: Entity)
+}
+
+class Movable {
+    <<interface>>
+    +move()
 }
 
 class Shooter {
     <<interface>>
     +isAbleToShoot()
     +getFireRate()
-}
-
-class Movable {
-    <<interface>>
-    +move()
 }
 
 class EnergyShield {

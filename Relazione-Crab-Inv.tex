@@ -43,6 +43,9 @@ del videogioco originale "Space Invaders"
 del 1978. Il videogioco consiste nel controllare un carro armato (il giocatore) per respingere ondate di entità ostili rappresentate da "granchi alieni" (da qui il nome).
 \\
 Il videogioco è visualizzato in formato 2D, il carro armato si muove a terra (parte bassa dello schermo),  mentre le entità ostili discendono dallo spazio (parte alta dello schermo). L'obiettivo del gioco è quello di respingere i nemici tramite l'arma del veicolo controllato, eliminandoli prima che possano raggiungere la posizione del carro armato ed evitandone eventuali proiettili da essi sparati.
+\\
+A supporto del giocatore sarà presente uno scudo planetario. Per "scudo planetario" si intende uno scudo energetico ad una via: ovvero che assorbe i colpi provenienti dall'esterno e lascia passare quelli provenienti dal pianeta, di ispirazione agli scudi energetici presenti in Star Wars\footnote{\url{https://youtu.be/8oBEzKm9grM?si=BCL6keqTVwP7vrGb&t=15}}. Esattamente come gli scudi qui mostrati essi possono però essere attraversati. Il giocatore se intende sfruttare al meglio il suo supporto nella difesa del pianeta, dovrà quindi cercare di evitare che i nemici danneggino lo scudo al punto di distruggerlo o che essi riescano ad attraversarlo.
+\\
 La struttura del gioco è basata sul genere "rogue-lite", ossia ogni tentativo concluso (con successo o meno) permetterà al giocatore di utilizzare le ricompense ottenute per migliorare il proprio veicolo in modo da essere meglio preparato per il tentativo successivo.
 \\
 Le partite seguono una struttura di livelli predefinita che si susseguono al compimento di quello precedente. 
@@ -50,11 +53,11 @@ La condizione di vittoria per poter passare al livello successivo (ed eventualme
 %
 La condizione di sconfitta che terminerà il tentativo è la fine delle "vite" disponibili al giocatore.
 È prevista la possibilità di localizzazione, in modo da permettere di cambiare la lingua dei testi mostrati.
-\newpage
+
 \subsection*{Requisiti funzionali}
 \begin{itemize}
 	\item Ci dovrà essere un Menu, con la possibilità di : \begin{itemize}
-	    \item fare una nuova partita ( che cancella una eventualmente già esistente)
+	    \item fare una nuova partita (che cancella una eventualmente già esistente)
         \item caricare una partita non finita
         \item consultare lo storico dei tentativi
         \item usare lo shop
@@ -80,19 +83,25 @@ La condizione di sconfitta che terminerà il tentativo è la fine delle "vite" d
 \newpage
 \section{Modello del Dominio}
 
-Il carro armato dovrà fronteggiare i "granchi alieni", che continueranno ad avvicinarsi alla Terra ad ondate, sparandogli col suo cannone e schivando i colpi alieni a lui rivolti. 
+Il gioco sarà diviso in 3 livelli ben distinti: la meta-progressione, che tiene traccia dei progressi fatti dal giocatore, la run management, che si occuperà di gestire la partita attuale (per run si intende appunto la partita), ed infine il core gameplay, costituito dalle entità in gioco.
+\\
+La partita dovrà essere composta da vari livelli, inizialmente predeterminati e, se il monte ore lo permette, successivamente generati proceduralmente in modo randomico. Ogni livello sarà quindi composto da ondate che il giocatore dovrà respingere.
+\\
+Il carro armato dovrà fronteggiare i "granchi alieni", sparandogli col suo cannone e schivando i colpi alieni a lui rivolti. 
 %
-La Terra è dotata di uno scudo planetario che la proteggerà fino a che non verrà distrutto. Per "scudo planetario" si intende uno scudo energetico ad una via: ovvero che assorbe i colpi provenienti dall'esterno e lascia passare quelli provenienti dal pianeta. I nemici caduti rilasceranno una valuta che verrà poi utilizzata per acquistare potenziamenti per il carro armato o lo scudo planetario. Col susseguirsi delle ondate si dovrebbe incontrare una difficoltà tale da perdere se non si hanno sufficienti potenziamenti. 
+La Terra è dotata di uno scudo planetario che la proteggerà fino a che non verrà distrutto. I nemici caduti rilasceranno una valuta che verrà poi utilizzata per acquistare potenziamenti per il carro armato o lo scudo planetario. Col susseguirsi delle ondate si dovrebbe incontrare una difficoltà tale da perdere se non si hanno sufficienti potenziamenti. 
 \definecolor{lie}{HTML}{FAFAFA}
 \textcolor{lie}{(skill issue)} %DA TOGLIERE%
 \\
 %
 Proseguendo sempre di più nei livelli si potrà, infine, finire il gioco, scacciando definitivamente gli invasori.
+\\
+Gli elementi costitutivi del dominio nella sintesi dei 3 livelli sono visibili nella figura \ref{img:analysis}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=1\linewidth]{img/modelloDominio.png}
-    \caption{Schema UML dell'analisi del dominio, con rappresentate le entità principali ed i rapporti fra loro}
+    \includegraphics[width=0.95\linewidth]{img/modelloDominio.png}
+    \caption{Schema UML dell'analisi del dominio, con rappresentate tutti e 3 i livelli del gioco. La meta-progression: rappresentata da Save, UserProfile, Shop e PowerUp. La Run Management: descritta da GameSession, Level e Entity. Ed infinte il livello di gameplay. Rappresentato da entity e tutto ciò che ne deriva}
     \label{img:analysis}
 \end{figure}
 
@@ -535,41 +544,6 @@ spaziatrice, o il tasto ``P'', è necessario che gli studenti lo segnalino.
  \item Si descrivono in modo eccessivamente minuzioso tutte le caratteristiche, anche minori, del software in oggetto.
  \item Manca una descrizione che consenta ad un utente qualunque di utilizzare almeno le funzionalità primarie dell'applicativo.
 \end{itemize}
-
-\chapter{Esercitazioni di laboratorio}
-
-In questo capitolo ciascuno studente elenca gli esercizi di laboratorio che ha svolto
-(se ne ha svolti),
-elencando i permalink dei post sul forum dove è avvenuta la consegna.
-%
-Questa sezione potrebbe essere processata da strumenti automatici,
-per cui link a oggetti diversi dal permalink della consegna,
-errori nell'email o nel nome del laboratorio possono portare ad ignorare alcune consegne,
-si raccomanda la massima precisione.
-
-\section*{Esempio}
-
-\subsection{paolino.paperino@studio.unibo.it}
-
-\begin{itemize}
- \item Laboratorio 04: \url{https://virtuale.unibo.it/mod/forum/discuss.php?d=12345#p123456}
- \item Laboratorio 06: \url{https://virtuale.unibo.it/mod/forum/discuss.php?d=22222#p222222}
- \item Laboratorio 09: \url{https://virtuale.unibo.it/mod/forum/discuss.php?d=99999#p999999}
-\end{itemize}
-
-\subsection{paperon.depaperoni@studio.unibo.it}
-
-\begin{itemize}
- \item Laboratorio 04: \url{https://virtuale.unibo.it/mod/forum/discuss.php?d=12345#p123456}
- \item Laboratorio 05: \url{https://virtuale.unibo.it/mod/forum/discuss.php?d=22222#p222222}
- \item Laboratorio 06: \url{https://virtuale.unibo.it/mod/forum/discuss.php?d=99999#p999999}
- \item Laboratorio 07: \url{https://virtuale.unibo.it/mod/forum/discuss.php?d=22222#p222222}
- \item Laboratorio 08: \url{https://virtuale.unibo.it/mod/forum/discuss.php?d=99999#p999999}
- \item Laboratorio 09: \url{https://virtuale.unibo.it/mod/forum/discuss.php?d=22222#p222222}
- \item Laboratorio 10: \url{https://virtuale.unibo.it/mod/forum/discuss.php?d=99999#p999999}
- \item Laboratorio 11: \url{https://virtuale.unibo.it/mod/forum/discuss.php?d=22222#p222222}
-\end{itemize}
-
 
 \bibliographystyle{alpha}
 \bibliography{13-template}

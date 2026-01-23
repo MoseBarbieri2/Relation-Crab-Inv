@@ -107,6 +107,76 @@ Gli elementi costitutivi del dominio nella sintesi dei 3 livelli sono visibili n
 
 \chapter{Design}
 
+\section{Architettura}
+
+L'architettura del gioco è strutturata col pattern MVC.
+
+\section{Design dettagliato}
+
+\subsection{Design Foschi}
+
+\subsubsection{Sincronizzazione dello stato della localizzazione}
+
+\paragraph{Problema}
+Per garantire che tutte le sezioni dell’interfaccia grafica condividessero uno stato coerente della lingua, era necessario centralizzare l’accesso alle stringhe localizzate.
+
+\paragraph{Soluzione 1}
+Ho implementato il pattern singleton, perché in questo contesto è corretto avere una sola istanza di Localization per client. Questo approccio mi ha permesso di creare un'unica istanza di Localization, che funge da servizio globale per recuperare le stringhe dai ResourceBundle. In questo modo, lo stato della lingua rimaneva coerente in tutta l'applicazione.
+
+\paragraph{Problemi generati}
+L'uso di questo pattern, ha reso complicato il testing unitario, e ha reso problematica la gestione del codice qualora si volesse aggiungere il multithreading. Inoltre questo pattern imponeva l'inizializzazione con un ResourceBundle di default, in piena contraddizione con la pratica di scegliere la lingua alla prima apertura del gioco.
+
+\paragraph{Soluzione}
+La classe è stata rielaborata con l'approccio single instance by design. Questo permette di mantenere uno stato consistente per tutta la GUI, ma l'istanza è accessibile solo dai componenti che la ricevono esplicitamente, invece di essere disponibile globalmente. Questo rende anche molto più semplice il testing automatico, perché permette di avere situazioni di partenza diverse senza dover modificare manualmente lo stato dell'istanza.
+
+\subsubsection{Gestione della musica}
+
+\chapter{Sviluppo}
+
+\section{Testing automatizzato}
+
+\section{Note di sviluppo}
+
+\subsection{Note di sviluppo Foschi}
+
+\subsubsection{Utilizzo della libreria Mockito}
+Utilizzata per fare unit testing di oggetti JavaFX
+\href{}{Permalink}
+
+\subsubsection{Utilizzo dei resource boundle}
+Utilizzati per garantire un supporto multilingua efficiente
+\href{}{Permalink}
+
+\subsubsection{Utilizzo di method inference}
+Usato per costruire metodi coi generici
+\href{}{Permalink}
+
+\subsubsection{Utilizzo di lamba expressions}
+Per fornire i metodi necessari senza ricorrere a classi anonime
+\href{}{Permalink}
+
+\chapter{Commenti finali}
+
+\section{Autovalutazione e lavori futuri}
+
+\subsubsection{Autovalutazione Foschi}
+
+\section{Difficoltà incontrate e commenti per i docenti}
+
+\appendix
+\chapter{Guida utente}
+
+
+
+
+
+
+
+
+
+
+\chapter{Design}
+
 In questo capitolo si spiegano le strategie messe in campo per soddisfare i requisiti identificati nell'analisi.
 
 Si parte da una visione architetturale, il cui scopo è informare il lettore di quale sia il funzionamento dell'applicativo realizzato ad alto livello.

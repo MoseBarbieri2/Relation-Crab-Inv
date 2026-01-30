@@ -44,8 +44,6 @@ del 1978. Il videogioco consiste nel controllare un carro armato (il giocatore) 
 \\
 Il videogioco è visualizzato in formato 2D, il carro armato si muove a terra (parte bassa dello schermo),  mentre le entità ostili discendono dallo spazio (parte alta dello schermo). L'obiettivo del gioco è quello di respingere i nemici tramite l'arma del veicolo controllato, eliminandoli prima che possano raggiungere la posizione del carro armato ed evitandone eventuali proiettili da essi sparati.
 \\
-A supporto del giocatore sarà presente uno scudo planetario. Per "scudo planetario" si intende uno scudo energetico ad una via: ovvero che assorbe i colpi provenienti dall'esterno e lascia passare quelli provenienti dal pianeta, di ispirazione agli scudi energetici presenti in Star Wars\footnote{\url{https://youtu.be/8oBEzKm9grM?si=BCL6keqTVwP7vrGb&t=15}}. Esattamente come gli scudi qui mostrati essi possono però essere attraversati. Il giocatore se intende sfruttare al meglio il suo supporto nella difesa del pianeta, dovrà quindi cercare di evitare che i nemici danneggino lo scudo al punto di distruggerlo o che essi riescano ad attraversarlo.
-\\
 La struttura del gioco è basata sul genere "rogue-lite", ossia ogni tentativo concluso (con successo o meno) permetterà al giocatore di utilizzare le ricompense ottenute per migliorare il proprio veicolo in modo da essere meglio preparato per il tentativo successivo.
 \\
 Le partite seguono una struttura di livelli predefinita che si susseguono al compimento di quello precedente. 
@@ -89,7 +87,7 @@ La partita dovrà essere composta da vari livelli, inizialmente predeterminati e
 \\
 Il carro armato dovrà fronteggiare i "granchi alieni", sparandogli col suo cannone e schivando i colpi alieni a lui rivolti. 
 %
-La Terra è dotata di uno scudo planetario che la proteggerà fino a che non verrà distrutto. I nemici caduti rilasceranno una valuta che verrà poi utilizzata per acquistare potenziamenti per il carro armato o lo scudo planetario. Col susseguirsi delle ondate si dovrebbe incontrare una difficoltà tale da perdere se non si hanno sufficienti potenziamenti. 
+I nemici caduti rilasceranno una valuta che verrà poi utilizzata per acquistare potenziamenti per il carro armato. Col susseguirsi delle ondate si dovrebbe incontrare una difficoltà tale da perdere se non si hanno sufficienti potenziamenti. 
 \definecolor{lie}{HTML}{FAFAFA}
 \textcolor{lie}{(skill issue)} %DA TOGLIERE%
 \\
@@ -129,7 +127,66 @@ L'uso di questo pattern, ha reso complicato il testing unitario, e ha reso probl
 \paragraph{Soluzione}
 La classe è stata rielaborata con l'approccio single instance by design. Questo permette di mantenere uno stato consistente per tutta la GUI, ma l'istanza è accessibile solo dai componenti che la ricevono esplicitamente, invece di essere disponibile globalmente. Questo rende anche molto più semplice il testing automatico, perché permette di avere situazioni di partenza diverse senza dover modificare manualmente lo stato dell'istanza.
 
-\subsubsection{Gestione della musica}
+\subsubsection{Gestione del suono}
+
+\paragraph{Problema}
+Gestire il suono in maniera uniforme per tutta l'esecuzione del gioco senza dipendere completamente da JavaFX
+
+\paragraph{Soluzione}
+Si è fatto uso come nella sezione precedente di un singleton, anch'esso poi corretto da un single instance by design. Per lo sviluppo è stato utilizzato il pattern facade per fare in modo che il controller non sapesse nulla dell'esistenza di JavaFX e che potesse quindi eseguire qualsiasi model con qualsiasi libreria che implementasse l'interfaccia di facciata.
+
+\begin{figure}[H]
+    \centering
+        \includegraphics[width=\linewidth]{img/soundServiceFacade.png}
+    \caption{Schema UML che mostra l'implementazione fatta}
+    \label{img:audiofacade}
+\end{figure}
+
+\subsubsection{Gestione delle immagini nella selezione della lingua}
+
+\paragraph{Problema}
+L'interfaccia di selezione della lingua deve avere dei bottoni che scalano in base al numero di lingue supportate e le dimensioni dello schermo
+
+\paragraph{Soluzione provata}
+La prima soluzione provata è stata quella di fare uso di SVG. È stato tentato di fare uso prima di batik e poi di SVGSalamander, ma il loro utilizzo si è rivelato molto più complicato del previsto e non sono riuscito a trovare un implementazione funzionasse senza usare del codice preso da altri.
+
+\paragraph{Soluzione}
+Seppur ci sia un concreto rischio di produrre risultati non pienamente gradevoli all'occhio ho deciso di fare uso di png. Questa scelta ha semplificato non poco tutta la gestione dell'immagine in quanto nativa a JavaFX consentendomi di trovare una soluzione che fosse di mia provenienza.
+
+\subsection{Design Barbieri}
+
+\subsubsection{Gestione delle Wave}
+
+\paragraph{Problema:}
+L'interfaccia fatta inizialmente non basta per gestire la progressione delle Wave pensata da noi. 
+\paragraph{Soluzione:}
+Quindi è necessario introdurre nel dominio un WaveProvider, con l'obbiettivo di fornire Wave a Level.
+%
+Questo permette di separare la logica di progressione e le singole ondate, mantenendo così il dominio stabile.Il WaveProvider è modellato tramite Strategy Pattern, così permettendo di cambiare il modo in qui sono fatte le Wave in un secondo momento e senza modificare il Level.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics{img/WaveProvider.png}
+    \caption{Schema UML di parte del dominio, che mostra l'interfaccia di implementazione di Wave provider}
+    \label{img:waveprovider}
+\end{figure}
+
+\subsubsection{La Generazione di nemici}
+
+\paragraph{Problema:}
+Nell'interfaccia iniziale esistevavo semplicemente i nemici quindi manca qualcosa che effettivamente li generi secondo il tipo di essi.
+\paragraph{Soluzione:}
+Quindi è necessaria una EnemyFactory 
+%
+Questo permette di separare la logica di progressione e le singole ondate, mantenendo così il dominio stabile.Il WaveProvider è modellato tramite Strategy Pattern, così permettendo di cambiare il modo in qui sono fatte le Wave in un secondo momento e senza modificare il Level.
+
+\begin{figure}[H]
+    \centering
+     \includegraphics[width=0.95\linewidth]{img/EnemyFactory.png}
+    \caption{Schema UML di parte del dominio che mostra l'interfaccia di implementazione di EnemyFactory e come interagisce con l'EnemyType che è l'enum con la tipologia di nemici}
+    \label{img:waveprovider}
+\end{figure}
+
 
 \chapter{Sviluppo}
 
@@ -155,17 +212,34 @@ Usato per costruire metodi coi generici
 Per fornire i metodi necessari senza ricorrere a classi anonime
 \href{}{Permalink}
 
+\subsubsection{Utilizzo della libreria Gson}
+Per gestire la permanenza delle impostazioni del gioco
+\href{}{Permalink}
+
+\subsubsection{Utilizzo del costrutto record}
+Per facilitare il salvataggio delle impostazioni del gioco
+\href{}{Permalink}
+
+\subsection{Note di sviluppo Barbieri}
+\subsubsection{Utilizzo di Generici}
+Per fornire i metodi necessari senza ricorrere a classi anonime
+\href{}{Permalink}
+
 \chapter{Commenti finali}
 
 \section{Autovalutazione e lavori futuri}
 
 \subsubsection{Autovalutazione Foschi}
+Lo svolgimento di questo progetto è stato complicato. Non avevamo mai fatto un lavoro di così grandi dimensioni e mi sono trovato in seria difficoltà all'inizio ad orientarmi in tutti gli step di progettazione del software.
+\\
+Lo sviluppo è stato ulteriormente complicato dal fatto che, a causa di altri impegni dei miei compagni, mi sono trovato per praticamente tutto lo sviluppo ad essere qualche giornata di lavoro avanti rispetto a loro. Coordinarsi è quindi stato più difficile di quanto avrei voluto e mi sono trovato molto spesso a strutturare framework che sono stati poi utilizzati dai miei compagni. A causa di queste circostanze mi sono impegnato a produrre del codice il più facile da implementare o utilizzare possibile, cosa che mi ha permesso di fare molta esperienza sul campo di ciò che dovrebbe essere del codice ben fatto.
 
 \section{Difficoltà incontrate e commenti per i docenti}
+Come gruppo ci siamo trovati impreparati ad un lavoro di progettazione di questo livello.
 
 \appendix
 \chapter{Guida utente}
-
+Note: In quanto immaginiamo che avere cartelle inutili possa causare fastidio notifichiamo ai professori che l'utilizzo di questa demo porterà alla creazione di una cartella .crabinvaders nella propria userFolder così nel caso potrete eliminarla.
 
 
 

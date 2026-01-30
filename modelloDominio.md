@@ -5,7 +5,6 @@ classDiagram
 %% INHERITANCE / CAPABILITIES
 %% =========================
 
-Entity <|-- EnergyShield
 Entity <|-- Bullet
 Entity <|-- Enemy
 Entity <|-- Player
@@ -86,10 +85,6 @@ class Shooter {
     <<interface>>
     +isAbleToShoot()
     +getFireRate()
-}
-
-class EnergyShield {
-    <<interface>>
 }
 
 class Enemy {

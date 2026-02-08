@@ -55,19 +55,18 @@ La condizione di sconfitta che terminerà il tentativo è la fine delle "vite" d
 \subsection*{Requisiti funzionali}
 \begin{itemize}
 	\item Ci dovrà essere un Menu, con la possibilità di : \begin{itemize}
-	    \item fare una nuova partita (che cancella una eventualmente già esistente)
-        \item caricare una partita non finita
+	    \item iniziare una nuova partita
         \item consultare lo storico dei tentativi
         \item usare lo shop
-        \item uscire dal gioco
         \item cambiare le impostazioni: \begin{itemize}
+        \item la lingua: (per il momento italiano o inglese)
         \item il volume
-        \item la lingua: (italiano o inglese)
         \end{itemize}
+        \item uscire dal gioco
 	\end{itemize}
     \item Il carro armato controllato dal giocatore deve prevedere il movimento sull'asse laterale (sinistra, destra) e la possibilità di "fare fuoco"
 	\item I nemici dovranno essere divisi ad ondate all'interno dei livelli, e dovranno essere capaci di muoversi verso il basso e sparare contro il giocatore.
-    \item I tentativi potranno essere salvati automaticamente alla fine di ogni livello in modo da poter riprendere a giocare in un secondo momento
+    \item Al termine di ciascuna partita il nuovo stato del profilo del giocatore dovrà essere aggiornato e salvato in modo da garantire l'integrità dei dati
     \item Sarà possibile utilizzare le risorse acquisite durante i tentativi per potenziarsi solo ed esclusivamente tra un tentativo e l'altro, mai durante un tentativo in corso
     
 \end{itemize}
@@ -77,8 +76,8 @@ La condizione di sconfitta che terminerà il tentativo è la fine delle "vite" d
 	\item Il gioco non dovrà avere grandi requisiti di risorse di sistema, dovrà essere facilmente eseguibile anche su macchine con prestazioni hardware ridotte
 \end{itemize}
 
-
 \newpage
+
 \section{Modello del Dominio}
 
 Il gioco sarà diviso in 3 livelli ben distinti: la meta-progressione, che tiene traccia dei progressi fatti dal giocatore, la run management, che si occuperà di gestire la partita attuale (per run si intende appunto la partita), ed infine il core gameplay, costituito dalle entità in gioco.
@@ -118,7 +117,7 @@ L'architettura del gioco è strutturata col pattern MVC.
 \paragraph{Problema}
 Per garantire che tutte le sezioni dell’interfaccia grafica condividessero uno stato coerente della lingua, era necessario centralizzare l’accesso alle stringhe localizzate.
 
-\paragraph{Soluzione 1}
+\paragraph{Soluzione provata}
 Ho implementato il pattern singleton, perché in questo contesto è corretto avere una sola istanza di Localization per client. Questo approccio mi ha permesso di creare un'unica istanza di Localization, che funge da servizio globale per recuperare le stringhe dai ResourceBundle. In questo modo, lo stato della lingua rimaneva coerente in tutta l'applicazione.
 
 \paragraph{Problemi generati}
@@ -127,31 +126,57 @@ L'uso di questo pattern, ha reso complicato il testing unitario, e ha reso probl
 \paragraph{Soluzione}
 La classe è stata rielaborata con l'approccio single instance by design. Questo permette di mantenere uno stato consistente per tutta la GUI, ma l'istanza è accessibile solo dai componenti che la ricevono esplicitamente, invece di essere disponibile globalmente. Questo rende anche molto più semplice il testing automatico, perché permette di avere situazioni di partenza diverse senza dover modificare manualmente lo stato dell'istanza.
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\linewidth]{img/localization.png}
+    \caption{Qui lo schema UML del design della localizzazione}
+    \label{fig:localization}
+\end{figure}
+
 \subsubsection{Gestione del suono}
 
 \paragraph{Problema}
 Gestire il suono in maniera uniforme per tutta l'esecuzione del gioco senza dipendere completamente da JavaFX
 
 \paragraph{Soluzione}
-Si è fatto uso come nella sezione precedente di un singleton, anch'esso poi corretto da un single instance by design. Per lo sviluppo è stato utilizzato il pattern facade per fare in modo che il controller non sapesse nulla dell'esistenza di JavaFX e che potesse quindi eseguire qualsiasi model con qualsiasi libreria che implementasse l'interfaccia di facciata.
+Si è fatto uso come nella sezione precedente di un singleton, anch'esso poi corretto da un approccio single instance by design. Per lo sviluppo è stato utilizzato il pattern facade creando quindi l'interfaccia SoundService, per fare in modo che il controller non sapesse nulla dell'esistenza di JavaFX e che potesse quindi eseguire qualsiasi model con qualsiasi libreria che implementasse l'interfaccia di facciata.
 
 \begin{figure}[H]
     \centering
         \includegraphics[width=\linewidth]{img/soundServiceFacade.png}
-    \caption{Schema UML che mostra l'implementazione fatta}
+    \caption{Schema UML che mostra la progettazione fatta con solo i metodi principali}
     \label{img:audiofacade}
 \end{figure}
 
-\subsubsection{Gestione delle immagini nella selezione della lingua}
+\subsubsection{Strutturazione delle entità}
 
 \paragraph{Problema}
-L'interfaccia di selezione della lingua deve avere dei bottoni che scalano in base al numero di lingue supportate e le dimensioni dello schermo
-
-\paragraph{Soluzione provata}
-La prima soluzione provata è stata quella di fare uso di SVG. È stato tentato di fare uso prima di batik e poi di SVGSalamander, ma il loro utilizzo si è rivelato molto più complicato del previsto e non sono riuscito a trovare un implementazione funzionasse senza usare del codice preso da altri.
+Le entità del gioco hanno tutte un comportamento base pressoché identico e vi sarebbe perciò una grande ripetizione di codice.
 
 \paragraph{Soluzione}
-Seppur ci sia un concreto rischio di produrre risultati non pienamente gradevoli all'occhio ho deciso di fare uso di png. Questa scelta ha semplificato non poco tutta la gestione dell'immagine in quanto nativa a JavaFX consentendomi di trovare una soluzione che fosse di mia provenienza.
+A risoluzione di ciò è stata progettata una classe astratta per tutte le entità che implementa tutti i metodi che esse devono avere, lasciando poi la possibilità a chi la eredita di specializzarla.
+
+\begin{figure}[H]
+    \centering
+        \includegraphics[width=0.6\linewidth]{img/entity.png}
+    \caption{Schema UML della progettazione delle entità con alcuni dei metodi che esse implementano come esempio}
+    \label{img:entity}
+\end{figure}
+
+\subsubsection{Standardizzazione dei controller dell'entità}
+
+\paragraph{Problema}
+In sede di sviluppo si è rilevato come i controller per le entità abbiano un comportamento pressoché identico eccezion fatta per il metodo update. Che ha lo scopo di fornire un update dello stato dell'entità ad ogni tick.
+
+\paragraph{Soluzione}
+Strutturare un controller astratto che fornisca implementazione per tutti i metodi in comune a tutte le entità specializzando poi all'occorrenza. La differenza nel metodo update è stata invece gestita creando due interfacce apposite con la propria versione di update. Metterli entrambi in overload come metodi astratti avrebbe portato obbligatoriamente ed erroneamente a dover implementare entrambi i metodi. In questo modo invece non si è costretti a farlo mantenendo quindi il codice pulito nel suo scopo.
+
+\begin{figure}[H]
+    \centering
+        \includegraphics[width=\linewidth]{img/entityController.png}
+    \caption{Schema UML della progettazione degli EntityController mostrando alcuni metodi come esempio}
+    \label{img:entityController}
+\end{figure}
 
 \subsection{Design Barbieri}
 
@@ -184,7 +209,7 @@ Questo permette di separare la logica di progressione e le singole ondate, mante
     \centering
      \includegraphics[width=0.95\linewidth]{img/EnemyFactory.png}
     \caption{Schema UML di parte del dominio che mostra l'interfaccia di EnemyFactory e come interagisce con l'EnemyType che è l'enum con la tipologia di nemici.}
-    \label{img:waveprovider}
+    \label{img:EnemyFactory}
 \end{figure}
 
 \subsubsection{La currency}
@@ -198,74 +223,80 @@ Perciò ho ritenuto necessario aggiungere ai singoli la quantità della ricompen
     \centering
      \includegraphics[width=0.95\linewidth]{img/rewardSystem.png}
     \caption{Schema UML di parte del dominio che mostra le interfacce modificate e come si collega con il resto della parte del dominio.}
-    \label{img:waveprovider}
+    \label{img:rewardSystem}
 \end{figure}
 
 
 \chapter{Sviluppo}
 
 \section{Testing automatizzato}
-Il testing automatico è stato sproporzionato nei vari membri del gruppo, dove alcuni ne hanno fatto meno uso e in maniera meno estensiva. La maggioranza dei test è stata fatta in modalità test-after ma si è anche cercato di praticare il tdd. 
+Il testing automatico è stato sproporzionato nei vari membri del gruppo, dove alcuni ne hanno fatto meno uso e in maniera meno estensiva. Si è cercato di praticare il TDD ma la grande maggioranza dei test è stata fatta in modalità test-after. 
 \\
-Soggetto dei test sono state soprattutto le parti di model e di controller. Con test appositi anche per la persistenza dei dati e quindi dei salvataggi. A questo fine si è fatto uso della libreria JUnit e in un'istanza specifica, ovvero per il testing del controller dell'audio, anche della libreria Mockito. Questa libreria è stata utilizzata in quanto il model audio fa uso di costrutti di JavaFX, in questo modo è stato possibile controllare logicamente in contesto di mocking che il controller funzionasse adeguatamente.
+Soggetto dei test sono state le parti di model e di controller. Con test appositi anche per la persistenza dei dati e quindi dei salvataggi. A questo fine si è fatto uso della libreria JUnit e in un'istanza specifica, ovvero per il testing del controller dell'audio, anche della libreria Mockito. Questa libreria è stata utilizzata in quanto il model audio fa uso di costrutti di JavaFX, in questo modo è stato possibile controllare logicamente in contesto di mocking che il controller funzionasse adeguatamente.
 \\
-Non è stato possibile fare testing di javaFX perché sarebbe stato necessario fare uso di una libreria che non è mai stata trattata nel corso, il cui apprendimento e successiva integrazione non ci avrebbe permesso di rispettare il monte ore prefissato. 
+Non è stato fatto testing automatico della view JavaFX perché sarebbe stato necessario fare uso di una libreria che non è mai stata trattata nel corso, il cui apprendimento e successiva integrazione non ci è stato possibile nel monte ore prefissato. 
 
 \section{Note di sviluppo}
 
 \subsection{Note di sviluppo Foschi}
 
 \subsubsection{Utilizzo della libreria JavaFX}
-Utilizzata per fare la view del gioco e la gestione dei suoni
-\href{}{Permalink}
+Utilizzata per fare la view del gioco e la gestione dei suoni. Qui un esempio
+\href{https://github.com/JacopoFoschi2/PSS25-crab-inv/blob/7e2387f37e84d412baba83f064e505c5f91b9d32/src/main/java/it/unibo/crabinv/View/LanguageSelection.java#L41-L54}{Permalink}
 
 \subsubsection{Utilizzo della libreria Mockito}
-Utilizzata per fare unit testing di oggetti JavaFX
-\href{}{Permalink}
+Utilizzata per fare mocking nello unit testing di oggetti JavaFX nell'AudioController
+\href{https://github.com/JacopoFoschi2/PSS25-crab-inv/blob/a89f17297b4dfa64e1ed1c547fb00e598e52e54b/src/test/java/it/unibo/crabinv/Controller/audio/TestAudioController.java#L23-L26}{Permalink}
+
+\subsubsection{Utilizzo della libreria Lombok}
+Utilizzata per automatizzare la creazione dei builder delle entità
+\href{https://github.com/JacopoFoschi2/PSS25-crab-inv/blob/20d4b39be68c6062d0f374d1ceb9e9b4058d9a4d/src/main/java/it/unibo/crabinv/Model/entities/entity/AbstractEntity.java#L9}{Permalink}
 
 \subsubsection{Utilizzo dei resource boundle}
 Utilizzati per garantire un supporto multilingua efficiente
-\href{}{Permalink}
+\href{https://github.com/JacopoFoschi2/PSS25-crab-inv/blob/7e2387f37e84d412baba83f064e505c5f91b9d32/src/main/java/it/unibo/crabinv/Model/i18n/Localization.java#L40}{Permalink}
 
 \subsubsection{Utilizzo di method inference}
-Usato per costruire metodi coi generici
-\href{}{Permalink}
+Usati in più parti del codice, qui un esempio.
+\href{https://github.com/JacopoFoschi2/PSS25-crab-inv/blob/7e2387f37e84d412baba83f064e505c5f91b9d32/src/main/java/it/unibo/crabinv/View/Settings.java#L50-L51}{Permalink}
 
-\subsubsection{Utilizzo di lamba expressions}
-Per fornire i metodi necessari senza ricorrere a classi anonime
-\href{}{Permalink}
+\subsubsection{Utilizzo di lambda expressions}
+Per fornire i metodi necessari senza ricorrere a classi anonime. Utilizzato in varie parti del codice, qui un esempio.
+\href{https://github.com/JacopoFoschi2/PSS25-crab-inv/blob/7e2387f37e84d412baba83f064e505c5f91b9d32/src/main/java/it/unibo/crabinv/View/Settings.java#L64}{Permalink}
 
 \subsubsection{Utilizzo della libreria Gson}
 Per gestire la permanenza delle impostazioni del gioco
-\href{}{Permalink}
+\href{https://github.com/JacopoFoschi2/PSS25-crab-inv/blob/7e2387f37e84d412baba83f064e505c5f91b9d32/src/main/java/it/unibo/crabinv/config/SettingsFileManager.java#L33}{Permalink}
 
 \subsubsection{Utilizzo del costrutto record}
 Per facilitare il salvataggio delle impostazioni del gioco
-\href{}{Permalink}
-
-\subsubsection{Utilizzo di stream}
-Per recuperare immagini in modo rapido
-\href{}{Permalink}
+\href{https://github.com/JacopoFoschi2/PSS25-crab-inv/blob/7e2387f37e84d412baba83f064e505c5f91b9d32/src/main/java/it/unibo/crabinv/config/AppSettings.java#L10-L30}{Permalink}
 
 \subsection{Note di sviluppo Barbieri}
 
 \subsubsection{Utilizzo della libreria JavaFX}
-Utilizzata per creare il menu ed anche il gameplay
-\href{}{Permalink}
+Utilizzata per creare il menu
+\href{https://github.com/JacopoFoschi2/PSS25-crab-inv/blob/7e2387f37e84d412baba83f064e505c5f91b9d32/src/main/java/it/unibo/crabinv/View/MainMenu.java#L1-L47}{Permalink}
 
 \subsubsection{Utilizzo di Stream}
 
 Utilizzati per ciclare su tutta la lista di nemici
-\href{}{Permalink}
+\href{https://github.com/JacopoFoschi2/PSS25-crab-inv/blob/7e2387f37e84d412baba83f064e505c5f91b9d32/src/main/java/it/unibo/crabinv/Model/Enemies/WaveImpl.java#L69}{Permalink}
 
 \subsubsection{Utilizzo di Method Inference}
 
 Utilizzato inseme allo stream
+\href{https://github.com/JacopoFoschi2/PSS25-crab-inv/blob/7e2387f37e84d412baba83f064e505c5f91b9d32/src/main/java/it/unibo/crabinv/Model/Enemies/WaveImpl.java#L69}{Permalink}
+
+Precisazione i due permalink precedenti sono inerenti a Johnatan Crescentini ma è perché dopo a fatto prima a fare un nuovo file per sistemare delle cose per il Game Engine. Questo è il commit dove l'ho fatto io sul file iniziale: 
+\href{https://github.com/JacopoFoschi2/PSS25-crab-inv/commit/ddea3d288a5cc7808e3c584ecca006d3e9645f0b#diff-6a448310d2a77abb6b264f973fce2c6a79de74d82a8caca7d456e5c03000c9cd}{CommitLink}
+
+\subsection{Parti riadattate dal codice:}
+
+Alcuni metodi specifici della view, come il createMenuButton: 
 \href{}{Permalink}
-
-\subsubsection{Utilizzo di Lambda Expressions}
-
-Utilizzato per il menu
+\\
+Ed Il metodo createPowerUpRow: 
 \href{}{Permalink}
 
 \chapter{Commenti finali}
@@ -275,7 +306,7 @@ Utilizzato per il menu
 \subsubsection{Autovalutazione Foschi}
 Lo svolgimento di questo progetto è stato complicato. Non avevamo mai fatto un lavoro di così grandi dimensioni e mi sono trovato in seria difficoltà all'inizio ad orientarmi in tutti gli step di progettazione del software.
 \\
-Lo sviluppo è stato ulteriormente complicato dal fatto che, a causa di altri impegni dei miei compagni, mi sono trovato per praticamente tutto lo sviluppo ad essere qualche giornata di lavoro avanti rispetto a loro. Coordinarsi è quindi stato più difficile di quanto avrei voluto e mi sono trovato molto spesso a strutturare framework che sono stati poi utilizzati dai miei compagni. A causa di queste circostanze mi sono impegnato a produrre del codice il più facile da implementare o utilizzare possibile, cosa che mi ha permesso di fare molta esperienza sul campo di ciò che dovrebbe essere del codice ben fatto.
+Lo sviluppo è stato ulteriormente complicato dal fatto che, a causa di altri impegni dei miei compagni, mi sono trovato per praticamente tutto lo sviluppo ad essere qualche giornata di lavoro avanti rispetto a loro. Coordinarsi è quindi stato più difficile di quanto avrei voluto e mi sono trovato molto spesso a strutturare framework che sono stati poi utilizzati dai miei compagni. A causa di queste circostanze mi sono impegnato a produrre del codice il più facile da implementare o utilizzare possibile, cosa che mi ha permesso di fare molta esperienza sul campo di ciò che dovrebbe essere del codice ben fatto. Riguardo alla gestione del tempo a malincuore non è stato possibile consegnare in tempo. Ritengo che ciò sia dovuto ad una sottostima fatta nella complessità e tempo necessario per lo svolgimento di alcuni punti fondamentali quali il gameloop dettata dalla nostra inesperienza. Sono tutt'ora insoddisfatto di ciò, ma mi servirà da lezione per eventuali progetti futuri.
 
 \subsubsection{Autovalutazione Barbieri}
 Il progetto è stato complesso. Avevo fatto qualcosa di progettazione, in altri contesti, ma come junior dev: solo a livello di richieste e poi implementazione quindi niente di profondo. Al termine di questo progetto mi sento ovviamente più preparato ad un lavoro di effettiva analisi iniziale e solo poi arrivare al codice effettivo.
@@ -283,13 +314,13 @@ Il progetto è stato complesso. Avevo fatto qualcosa di progettazione, in altri 
 In generale penso di poter fare meglio, a livello di codice ed anche di progettazione, a livello di pattern sono riuscito a trovare qualcosa che potesse essere utile al progetto ma comunque non avendo un'esperienza tale da permettermi di giudicare tutto quello che ho fatto, obiettivamente, io penso di aver fatto quello che potevo fare nel tempo a disposizione. Sicuramente ho migliorato la mia capacità di progettazione e la valutazione delle tempistiche. Nel complesso è stata un'esperienza dura, ma che ha formato
 
 \section{Difficoltà incontrate e commenti per i docenti}
-Come gruppo ci siamo trovati impreparati ad affrontare un lavoro di progettazione di questo livello. Perché riteniamo che nell'effettivo non ci siano stati ripartiti sufficienti insegnamenti a riguardo. Abbiamo perciò dovuto imparare molte cose in corso d'opera, portandoci anche a commettere errori altrimenti evitabili. Ci siamo sentiti costretti a ricorrere a LLM e guide online, non tanto per l'implementazione del codice, quanto per chiedere consigli di progettazione, informandoci su ciò che viene normalmente applicato allo stato dell'arte. Ci sentiamo di consigliare caldamente ai docenti di porre una maggiore attenzione quindi alla progettazione del codice in sè, per quanto possiamo capire che i limiti di tempo sono quelli che sono, sarebbe di grande aiuto per gli studenti futuri.
+Come gruppo ci siamo trovati impreparati ad affrontare un lavoro di progettazione di questo livello. Perché riteniamo che nell'effettivo non ci siano stati ripartiti sufficienti insegnamenti a riguardo. Abbiamo perciò dovuto imparare molte cose in corso d'opera, portandoci anche a commettere errori altrimenti evitabili. Ci siamo sentiti costretti a ricorrere a LLM e guide online, non tanto per l'implementazione del codice, quanto per chiedere consigli di progettazione, informandoci su ciò che viene normalmente applicato allo stato dell'arte. Ci sentiamo di consigliare caldamente ai docenti di porre una maggiore attenzione quindi alla progettazione del codice in sé, per quanto possiamo capire che i limiti di tempo sono quelli che sono, sarebbe di grande aiuto per gli studenti futuri.
 
 \appendix
 \chapter{Guida utente}
 Note: In quanto immaginiamo che avere cartelle inutili possa causare fastidio notifichiamo ai professori che l'utilizzo di questa demo porterà alla creazione di una cartella .crabinvaders nella propria userFolder.
 
 La navigazione della UI può essere svolta sia col Tab che con le frecce direzionali. La selezione può essere fatta sia con Spazio che con Invio.
-I comandi del giocatore sono A per muoversi a sinistra, D per muoversi a destra, SPAZIO per sparare e Esc per mettere in pausa.
+I comandi del giocatore sono Freccia Sinistra per muoversi a sinistra, Freccia Destra per muoversi a destra, SPAZIO per sparare e Esc per mettere in pausa.
 
 \end{document}
